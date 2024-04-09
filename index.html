@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Convert Data to Audio</title>
+        <link rel="stylesheet" href="styles.css">
+    </head>
+<body>
+    <div class="container">
+        <h2>Convert Data to Audio</h2>
+        <div style="display: flex; gap: 10px;">
+            <button onclick="convertDataToAudio('a')">CMD1</button>
+            <button onclick="convertDataToAudio('h')">CMD2</button>
+            <button onclick="convertDataToAudio('m')">CMD3</button>
+            <button onclick="convertDataToAudio('z')">CMD4</button>
+        </div><br><br>
+
+        <div>Tx Data:</div> <textarea name="textarea" id="txData" style="width:300px;height:100px;">Test Data To Audio</textarea><br>
+        <div style="display: flex; gap: 10px;">
+            <button onclick="onSend();">Send</button>
+            <button onclick="deleteWaveform()">Delete Waveform</button>
+        </div>
+        <div id="waveform"></div> <!-- Container for the waveform -->
+    </div>
+    <script type="text/javascript" src="ggwave.js"></script>
+    <script type="text/javascript" src="script.js"></script>
+    <script src="https://unpkg.com/wavesurfer.js@7"></script>
+</body>
+</html>
