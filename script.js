@@ -185,7 +185,10 @@ function convertDataToPCM(data) {
     const audioContextOptions = { sampleRate: desiredSampleRate };
     const audioContext = new (window.AudioContext || window.webkitAudioContext)(audioContextOptions);
 
-    const frequency = dataToFrequency(data)[0]
+    let frequency = dataToFrequency(data)[0]
+    if(data == "a"){
+        frequency = 100
+    }
     //const frequency = 100
 
     function playSound() {
