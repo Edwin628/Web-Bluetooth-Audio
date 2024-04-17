@@ -140,17 +140,21 @@ function bufferToWave(abuffer, len, callback) {
 }
 
 function convertDataToAudio(data) {
-    // Use 'data' directly instead of getting value from an input field
-    const frequencies = dataToFrequency(data); // Adjust dataToFrequency() as necessary
+    // Set Sample Rate
+    const desiredSampleRate = 48000; 
 
-    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    const audioContextOptions = { sampleRate: desiredSampleRate };
+    const audioContext = new (window.AudioContext || window.webkitAudioContext)(audioContextOptions);
+
     const oscillator = audioContext.createOscillator();
     oscillator.type = 'sine';
-    oscillator.frequency.setValueAtTime(frequencies[0], audioContext.currentTime);
+    oscillator.frequency.setValueAtTime(dataToFrequency(data)[0], audioContext.currentTime);
 
     oscillator.connect(audioContext.destination);
     oscillator.start();
     oscillator.stop(audioContext.currentTime + 1);
+
+    console.log("Actual sample rate used:", audioContext.sampleRate);
 }
 
 
