@@ -191,11 +191,17 @@ function convertDataToPCM(data) {
     }
     //const frequency = 100
 
+
     function playSound() {
         // Create AudioBuffer
         const sampleRate = audioContext.sampleRate; // 44100 Hz
         const bufferSize = sampleRate * 1; // 1s 
         const audioBuffer = audioContext.createBuffer(1, bufferSize, sampleRate);
+
+        
+    
+        const messageElement = document.getElementById('message');
+        messageElement.textContent = "Sample Rate: " + audioContext.sampleRate;
 
         // Fill the AudioBuffer（Sine Wave here）
         let bufferData = audioBuffer.getChannelData(0);
