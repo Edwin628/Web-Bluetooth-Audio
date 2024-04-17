@@ -21,6 +21,8 @@ var txData = document.getElementById("txData");
 var rxData = document.getElementById("rxData");
 var captureStart = document.getElementById("captureStart");
 var captureStop = document.getElementById("captureStop");
+const canvas = document.getElementById('oscillatorCanvas');
+const ctx = canvas.getContext('2d');
 
 // helper function
 function convertTypedArray(src, type) {
@@ -141,7 +143,7 @@ function bufferToWave(abuffer, len, callback) {
 
 function convertDataToAudio(data) {
     // Set Sample Rate
-    const desiredSampleRate = 48000; 
+    const desiredSampleRate = 8000; 
 
     const audioContextOptions = { sampleRate: desiredSampleRate };
     const audioContext = new (window.AudioContext || window.webkitAudioContext)(audioContextOptions);
@@ -149,44 +151,136 @@ function convertDataToAudio(data) {
     const oscillator = audioContext.createOscillator();
     oscillator.type = 'sine';
     oscillator.frequency.setValueAtTime(dataToFrequency(data)[0], audioContext.currentTime);
+    console.log("Frequency", dataToFrequency(data)[0])
 
-    oscillator.connect(audioContext.destination);
+    // Create AnalyserNode
+    const analyser = audioContext.createAnalyser();
+    analyser.fftSize = 2048;
+    const bufferLength = analyser.frequencyBinCount;
+    const dataArray = new Uint8Array(bufferLength);
+
+    // Connect to oscillator
+    oscillator.connect(analyser);
+    analyser.connect(audioContext.destination);
+
+    //oscillator.connect(audioContext.destination);
     oscillator.start();
     oscillator.stop(audioContext.currentTime + 1);
+
+    drawWaveform(analyser, dataArray)
+    //drawFrequency();
+
+    const messageElement = document.getElementById('message');
+    messageElement.textContent = "Sample Rate: " + audioContext.sampleRate;
 
     console.log("Actual sample rate used:", audioContext.sampleRate);
 }
 
 
-function convertDataToPCM() {
-    // Step 1: Generate Audio
-    const offlineContext = new OfflineAudioContext(1, 44100*40, 44100);
-    const oscillator = offlineContext.createOscillator();
-    oscillator.type = 'sine';
-    oscillator.frequency.setValueAtTime(440, offlineContext.currentTime);
-    oscillator.connect(offlineContext.destination);
-    oscillator.start(0);
-    oscillator.stop(1);
 
-    // Render the audio
-    offlineContext.startRendering().then(function(renderedBuffer) {
-        // Step 2: Encode to WAV
-        let wavData = encodeWAV(renderedBuffer);
-        
-        // Step 3: Create Blob and Download
-        let blob = new Blob([wavData], {type: "audio/wav"});
-        let url = URL.createObjectURL(blob);
-        
-        let anchor = document.createElement('a');
-        anchor.href = url;
-        anchor.download = 'audio.wav';
-        document.body.appendChild(anchor);
-        anchor.click();
-        
-        // Cleanup
-        document.body.removeChild(anchor);
-        URL.revokeObjectURL(url);
-    });
+function convertDataToPCM(data) {
+
+    const desiredSampleRate = 8000; 
+
+    const audioContextOptions = { sampleRate: desiredSampleRate };
+    const audioContext = new (window.AudioContext || window.webkitAudioContext)(audioContextOptions);
+
+    const frequency = dataToFrequency(data)[0]
+    //const frequency = 100
+
+    function playSound() {
+        // Create AudioBuffer
+        const sampleRate = audioContext.sampleRate; // 44100 Hz
+        const bufferSize = sampleRate * 1; // 1s 
+        const audioBuffer = audioContext.createBuffer(1, bufferSize, sampleRate);
+
+        // Fill the AudioBuffer（Sine Wave here）
+        let bufferData = audioBuffer.getChannelData(0);
+        for (let i = 0; i < bufferSize; i++) {
+            bufferData[i] = Math.sin(2 * Math.PI * frequency * i / sampleRate); // frequency Hz 的音频频率
+        }
+
+        // Use AudioBufferSourceNode to play AudioBuffer
+        const source = audioContext.createBufferSource();
+        source.buffer = audioBuffer;
+
+        // Create analyser node
+        const analyser = audioContext.createAnalyser();
+        analyser.fftSize = 2048;
+        const dataArray = new Uint8Array(analyser.frequencyBinCount);
+
+        source.connect(analyser);
+        analyser.connect(audioContext.destination);
+
+        source.start();
+        drawWaveform(analyser, dataArray);
+
+        source.onended = () => {
+            source.disconnect();
+            analyser.disconnect();
+        };
+    }
+
+    playSound();
+}
+
+function drawWaveform(analyser, dataArray) {
+    requestAnimationFrame(() => drawWaveform(analyser, dataArray));
+
+    analyser.getByteTimeDomainData(dataArray);
+
+    ctx.fillStyle = 'rgb(200, 200, 200)';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    ctx.lineWidth = 2;
+    ctx.strokeStyle = 'rgb(0, 0, 0)';
+    ctx.beginPath();
+
+    const sliceWidth = canvas.width * 1.0 / dataArray.length;
+    let x = 0;
+
+    for (let i = 0; i < dataArray.length; i++) {
+        const v = dataArray[i] / 128.0;
+        const y = v * canvas.height / 2;
+
+        if (i === 0) {
+            ctx.moveTo(x, y);
+        } else {
+            ctx.lineTo(x, y);
+        }
+
+        x += sliceWidth;
+    }
+
+    ctx.lineTo(canvas.width, canvas.height / 2);
+    ctx.stroke();
+}
+
+function drawFrequency(analyser, dataArray) {
+    //requestAnimationFrame(drawFrequency);
+    requestAnimationFrame(() => drawFrequency(analyser, dataArray));
+
+    analyser.getByteFrequencyData(dataArray);  // 获取频率域数据
+
+    ctx.fillStyle = 'rgb(200, 200, 200)';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    ctx.lineWidth = 2;
+    ctx.strokeStyle = 'rgb(0, 0, 0)';
+    ctx.beginPath();
+
+    let barWidth = (canvas.width / dataArray.length) * 2.5;
+    let barHeight;
+    let x = 0;
+
+    for (let i = 0; i < dataArray.length; i++) {
+        barHeight = dataArray[i] * 2;
+
+        ctx.fillStyle = 'rgb(' + (barHeight+100) + ',50,50)';
+        ctx.fillRect(x, canvas.height - barHeight / 2, barWidth, barHeight / 2);
+
+        x += barWidth + 1;
+    }
 }
 
 // This is a placeholder for the WAV encoding function
