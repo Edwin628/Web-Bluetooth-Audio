@@ -9,6 +9,12 @@
 <body>
     <div class="container">
         <h2>Convert Data to Audio</h2>
+        <div class="inline-element">Input Sampling Number:</div>
+        <input type="number" id="numberInput" class="inline-element" placeholder="Enter a number">
+        <br><br>
+        <button onclick="displayNumber()">Confirm</button>
+        <div id="display"></div>
+        <br><br>
         <div style="display: flex; gap: 10px;">
             <button onclick="convertDataToPCM('a')">CMD1</button>
             <button onclick="convertDataToPCM('h')">CMD2</button>

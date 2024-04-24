@@ -141,10 +141,11 @@ function bufferToWave(abuffer, len, callback) {
     }
 }
 
-function convertDataToAudio(data) {
-    // Set Sample Rate
-    const desiredSampleRate = 8000; 
 
+
+
+function convertDataToAudio(data) {
+    const desiredSampleRate = 8000; 
     const audioContextOptions = { sampleRate: desiredSampleRate };
     const audioContext = new (window.AudioContext || window.webkitAudioContext)(audioContextOptions);
 
@@ -176,11 +177,16 @@ function convertDataToAudio(data) {
     console.log("Actual sample rate used:", audioContext.sampleRate);
 }
 
+var desiredSampleRate = 8000; 
 
+// Set Sample Rate
+function displayNumber() {
+    desiredSampleRate = document.getElementById('numberInput').value;
+    // display the number
+    // document.getElementById('display').innerText = 'SampleRate: ' + number;
+}
 
 function convertDataToPCM(data) {
-
-    const desiredSampleRate = 8000; 
 
     const audioContextOptions = { sampleRate: desiredSampleRate };
     const audioContext = new (window.AudioContext || window.webkitAudioContext)(audioContextOptions);
@@ -206,7 +212,7 @@ function convertDataToPCM(data) {
         // Fill the AudioBuffer（Sine Wave here）
         let bufferData = audioBuffer.getChannelData(0);
         for (let i = 0; i < bufferSize; i++) {
-            bufferData[i] = Math.sin(2 * Math.PI * frequency * i / sampleRate); // frequency Hz 的音频频率
+            bufferData[i] = Math.sin(2 * Math.PI * frequency * i / sampleRate); // frequency Hz 
         }
 
         // Use AudioBufferSourceNode to play AudioBuffer
