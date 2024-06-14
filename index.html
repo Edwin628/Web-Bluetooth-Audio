@@ -9,31 +9,35 @@
 <body>
     <div class="container">
         <h2>Convert Data to Audio</h2>
+        <button id="connect-bluetooth">Connect to Bluetooth Device</button>
+        <br><br>
         <div class="inline-element">Input Sampling Number:</div>
-        <input type="number" id="numberInput" class="inline-element" placeholder="Enter a number">
+        <input type="number" id="numberInput" class="inline-element" placeholder="48000Hz">
         <br><br>
         <button onclick="displayNumber()">Confirm</button>
         <div id="display"></div>
         <br><br>
         <div style="display: flex; gap: 10px;">
-            <button onclick="convertDataToPCM('a')">CMD1</button>
-            <button onclick="convertDataToPCM('h')">CMD2</button>
-            <button onclick="convertDataToPCM('m')">CMD3</button>
+            <button onclick="convertDataToPCM('a', 'flat')">CMD1</button>
+            <button onclick="convertDataToPCM('h', 'linear')">CMD2</button>
+            <button onclick="convertDataToPCM('m', 'sine')">CMD3</button>
             <button onclick="convertDataToPCM('z')">CMD4</button>
         </div><br><br>
         <div>
             <div id="message" style="color: blue; margin-bottom: 10px;"></div>
             <canvas id="oscillatorCanvas"></canvas>
         </div>
-        <div>Tx Data:</div> <textarea name="textarea" id="txData" style="width:300px;height:100px;">Test Data To Audio</textarea><br>
+        <div>Data To Send:</div> <textarea name="textarea" id="txData" style="width:300px;height:100px;">Test Data To Audio</textarea><br>
         <div style="display: flex; gap: 10px;">
             <button onclick="onSend();">Send</button>
             <button onclick="deleteWaveform()">Delete Waveform</button>
         </div>
         <div id="waveform"></div> <!-- Container for the waveform -->
     </div>
-    <script type="text/javascript" src="ggwave.js"></script>
-    <script type="text/javascript" src="script.js"></script>
+    <script type="text/javascript" src="scripts/ggwave_lib.js"></script>
+    <script type="text/javascript" src="scripts/ggwave.js"></script>
+    <script type="text/javascript" src="scripts/audio.js"></script>
+    <script type="text/javascript" src="scripts/bluetooth.js"></script>
     <script src="https://unpkg.com/wavesurfer.js@7"></script>
 </body>
 </html>
