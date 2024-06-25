@@ -136,6 +136,67 @@ function convertDataToPCM(data, path = "flat") {
     playSound();
 }
 
+function convertDataToFSK(data, desiredSampleRate = 48000) {
+    const audioContextOptions = { sampleRate: desiredSampleRate };
+    const audioContext = new (window.AudioContext || window.webkitAudioContext)(audioContextOptions);
+
+    // Define frequencies for FSK
+    const frequency0 = 1000; // Frequency for '0'
+    const frequency1 = 2000; // Frequency for '1'
+
+    function dataToFrequency(data) {
+        return data.split('').map(bit => bit === '0' ? frequency0 : frequency1);
+    }
+
+    function createFSKAudioBuffer(context, frequencies, duration = 0.1) {
+        const sampleRate = context.sampleRate;
+        const frameCount = sampleRate * duration * frequencies.length;
+        const buffer = context.createBuffer(1, frameCount, sampleRate);
+        const data = buffer.getChannelData(0);
+
+        frequencies.forEach((frequency, index) => {
+            const start = index * sampleRate * duration;
+            for (let i = 0; i < sampleRate * duration; i++) {
+                data[start + i] = Math.sin(2 * Math.PI * frequency * i / sampleRate);
+            }
+        });
+
+        return buffer;
+    }
+
+    function playSound(frequencies) {
+        // Display sample rate
+        const messageElement = document.getElementById('message');
+        messageElement.textContent = "Sample Rate: " + audioContext.sampleRate;
+
+        // Create AudioBuffer for FSK
+        const audioBuffer = createFSKAudioBuffer(audioContext, frequencies);
+
+        // Use AudioBufferSourceNode to play AudioBuffer
+        const source = audioContext.createBufferSource();
+        source.buffer = audioBuffer;
+
+        // Create analyser node
+        const analyser = audioContext.createAnalyser();
+        analyser.fftSize = 2048;
+        const dataArray = new Uint8Array(analyser.frequencyBinCount);
+
+        source.connect(analyser);
+        analyser.connect(audioContext.destination);
+
+        source.start();
+        drawWaveform(analyser, dataArray);
+
+        source.onended = () => {
+            source.disconnect();
+            analyser.disconnect();
+        };
+    }
+
+    const frequencies = dataToFrequency(data);
+    playSound(frequencies);
+}
+
 function drawWaveform(analyser, dataArray) {
     requestAnimationFrame(() => drawWaveform(analyser, dataArray));
 
