@@ -2,6 +2,14 @@ import { createSineWaveAudioBuffer, createLinearAudioBuffer, createFlatAudioBuff
 import { drawWaveform } from './draw.js';
 import { desiredSampleRate } from './audioContext.js';
 
+function stopSound() {
+    if (audioContext) {
+        audioContext.close().then(() => {
+            audioContext = null;
+        });
+    }
+}
+
 function convertDataToPCM(data, path = "flat") {
     const audioContextOptions = { sampleRate: desiredSampleRate };
     const audioContext = new (window.AudioContext || window.webkitAudioContext)(audioContextOptions);
@@ -24,7 +32,7 @@ function convertDataToPCM(data, path = "flat") {
                 audioBuffer = createLinearAudioBuffer(audioContext);
                 break;
             case "sine":
-                audioBuffer = createSineWaveAudioBuffer(audioContext, 1000, 1000);
+                audioBuffer = createSineWaveAudioBuffer(audioContext, 1000, 100);
                 break;
             default:
                 audioBuffer = createFlatAudioBuffer(audioContext);
@@ -47,6 +55,7 @@ function convertDataToPCM(data, path = "flat") {
             source.disconnect();
             analyser.disconnect();
         };
+        stopSound();
     }
 
     playSound();
@@ -88,6 +97,7 @@ function convertDataToFSK(data, desiredSampleRate = 48000) {
         const messageElement = document.getElementById('message');
         messageElement.textContent = "Sample Rate: " + audioContext.sampleRate;
 
+        //const audioBuffer = createFSKAudioBuffer(audioContext, frequencies);
         const audioBuffer = createFSKAudioBuffer(audioContext, frequencies);
 
         const source = audioContext.createBufferSource();
@@ -113,4 +123,10 @@ function convertDataToFSK(data, desiredSampleRate = 48000) {
     playSound(frequencies);
 }
 
-export { convertDataToPCM, convertDataToFSK };
+function convertBinaryData() {
+    const binaryInput = document.getElementById('binaryInput').value;
+    const sampleRateInput = document.getElementById('numberInput').value || 48000;
+    convertDataToFSK(binaryInput, parseInt(sampleRateInput));
+}
+
+export { convertDataToPCM, convertDataToFSK, convertBinaryData };

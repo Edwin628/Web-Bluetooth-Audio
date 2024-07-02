@@ -27,6 +27,11 @@
                 <div id="message" style="color: blue; margin-bottom: 10px;"></div>
                 <canvas id="oscillatorCanvas"></canvas>
             </div>
+            <br><br>
+            <div>Binary Data:</div> 
+            <input type="text" id="binaryInput" placeholder="Enter binary data">
+            <button onclick="convertBinaryData()">Convert and Play</button>
+            <br><br>
             <div>Data To Send:</div> <textarea name="textarea" id="txData" style="width:300px;height:100px;">Test Data To Audio</textarea><br>
             <div style="display: flex; gap: 10px;">
                 <button onclick="onSend();">Send</button>
