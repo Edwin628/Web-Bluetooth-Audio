@@ -44,4 +44,20 @@ function createFlatAudioBuffer(audioContext, duration = 1) {
     return audioBuffer;
 }
 
-export { createSineWaveAudioBuffer, createLinearAudioBuffer, createFlatAudioBuffer };
+function createEndingAudioBuffer(audioContext, duration = 1) {
+    const sampleRate = audioContext.sampleRate;
+    const bufferSize = sampleRate * duration;
+    const audioBuffer = audioContext.createBuffer(2, bufferSize, sampleRate);
+
+    let bufferDataLeft = audioBuffer.getChannelData(0);
+    let bufferDataRight = audioBuffer.getChannelData(1);
+
+    for (let i = 0; i < bufferSize; i++) {
+        bufferDataLeft[i] = -1;
+        bufferDataRight[i] = 1;
+    }
+
+    return audioBuffer;
+}
+
+export { createSineWaveAudioBuffer, createLinearAudioBuffer, createFlatAudioBuffer, createEndingAudioBuffer };
