@@ -302,6 +302,42 @@ function convertDataToFreqRange(data, desiredSampleRate = 48000) {
         return buffer;
     }
 
+    function drawFrequencySpectrum(analyser, dataArray, sampleRate, frequencies) {
+        const canvas = document.getElementById("canvas");
+        const canvasCtx = canvas.getContext("2d");
+
+        function draw() {
+            requestAnimationFrame(draw);
+            analyser.getByteFrequencyData(dataArray);
+
+            canvasCtx.clearRect(0, 0, canvas.width, canvas.height);
+
+            const barWidth = canvas.width / dataArray.length;
+            let barHeight;
+            let x = 0;
+
+            for (let i = 0; i < dataArray.length; i++) {
+                barHeight = dataArray[i];
+
+                canvasCtx.fillStyle = `rgb(${barHeight + 100}, 50, 50)`;
+                canvasCtx.fillRect(x, canvas.height - barHeight / 2, barWidth, barHeight / 2);
+
+                x += barWidth;
+            }
+
+            // Draw frequency labels
+            const nyquist = sampleRate / 2;
+            frequencies.forEach(freq => {
+                const bin = Math.round(freq / nyquist * dataArray.length);
+                const xPos = bin * barWidth;
+                canvasCtx.fillStyle = "white";
+                canvasCtx.fillText(freq + " Hz", xPos, canvas.height - 10);
+            });
+        }
+
+        draw();
+    }
+
     function playSound(chirpData) {
         const messageElement = document.getElementById('message');
         messageElement.textContent = "Sample Rate: " + audioContext.sampleRate;
@@ -324,6 +360,8 @@ function convertDataToFreqRange(data, desiredSampleRate = 48000) {
 
         source.start();
         drawWaveform(analyser, dataArray);
+        //drawFrequencySpectrum(analyser, dataArray, audioContext.sampleRate, [2000, 4000, 6000, 8000, 10000, 12000, 14000, 16000]);
+
 
         source.onended = () => {
             source.disconnect();
