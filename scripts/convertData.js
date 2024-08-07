@@ -254,21 +254,21 @@ function convertDataToFreqRange(data, desiredSampleRate = 48000) {
         });
     }
 
-    function createChirpAudioBuffer(context, chirpData, duration, paddingDuration = 0.001) {
+    function createBitFreqAudioBuffer(context, freqData, duration, paddingDuration = 0.001) {
         const sampleRate = context.sampleRate;
-        const chirpCount = chirpData.length;
-        const chirpFrameCount = sampleRate * duration;
+        const chirpCount = freqData.length;
+        const FreqFrameCount = sampleRate * duration;
         const paddingFrameCount = sampleRate * paddingDuration;
-        const totalFrameCount = (chirpFrameCount + paddingFrameCount) * chirpCount + paddingFrameCount;
+        const totalFrameCount = (FreqFrameCount + paddingFrameCount) * chirpCount + paddingFrameCount;
         
         const buffer = context.createBuffer(2, totalFrameCount, sampleRate);
         const bufferDataLeft = buffer.getChannelData(0);
         const bufferDataRight = buffer.getChannelData(1);
     
-        chirpData.forEach((frequencies, index) => {
-            const chirpStart = Math.floor((index * (chirpFrameCount + paddingFrameCount)) + paddingFrameCount);
-            const chirpEnd = chirpStart + chirpFrameCount;
-            const paddingStart = Math.floor(index * (chirpFrameCount + paddingFrameCount));
+        freqData.forEach((frequencies, index) => {
+            const chirpStart = Math.floor((index * (FreqFrameCount + paddingFrameCount)) + paddingFrameCount);
+            const chirpEnd = chirpStart + FreqFrameCount;
+            const paddingStart = Math.floor(index * (FreqFrameCount + paddingFrameCount));
             const paddingEnd = paddingStart + paddingFrameCount;
     
             // Fill padding with zeros
@@ -292,7 +292,7 @@ function convertDataToFreqRange(data, desiredSampleRate = 48000) {
         });
     
         // Fill the final padding with zeros
-        const finalPaddingStart = chirpCount * (chirpFrameCount + paddingFrameCount);
+        const finalPaddingStart = chirpCount * (FreqFrameCount + paddingFrameCount);
         const finalPaddingEnd = finalPaddingStart + paddingFrameCount;
         for (let i = finalPaddingStart; i < finalPaddingEnd; i++) {
             bufferDataLeft[i] = 0;
@@ -343,7 +343,7 @@ function convertDataToFreqRange(data, desiredSampleRate = 48000) {
         messageElement.textContent = "Sample Rate: " + audioContext.sampleRate;
 
         let flatBuffer = createFlatAudioBuffer(audioContext, 0.01);
-        const chirpBuffer = createChirpAudioBuffer(audioContext, chirpData, duration);
+        const chirpBuffer = createBitFreqAudioBuffer(audioContext, chirpData, duration);
         let endBuffer = createEndingAudioBuffer(audioContext, 0.01);
         let concatenatedBuffer = concatenateAudioBuffers(audioContext, flatBuffer, chirpBuffer);
         concatenatedBuffer = concatenateAudioBuffers(audioContext, concatenatedBuffer, endBuffer);  
@@ -374,6 +374,155 @@ function convertDataToFreqRange(data, desiredSampleRate = 48000) {
     console.log(chirpData);
     playSound(chirpData);
 }
+
+function convertDataToChirpRange(data, desiredSampleRate = 48000) {
+    const audioContextOptions = { sampleRate: desiredSampleRate };
+    const audioContext = new (window.AudioContext || window.webkitAudioContext)(audioContextOptions);
+
+    const frequencyBase = 4000; // base frequency
+    const frequencyInterval = 1000; 
+    const frequencyRamp = 100; // frequency range for linear ramp
+    const duration = 0.01; // duration for each ascii in seconds
+
+    function ASCIIToChirpData(data) {
+        return data.split('').map(char => {
+            const charCode = char.charCodeAt(0);
+            const chirpSegments = [];
+            for (let i = 0; i < 8; i++) {
+                if (charCode & (1 << i)) {
+                    // 1 bit: frequency linearly increases
+                    const startFreq = frequencyBase +  frequencyInterval * (i + 1);
+                    chirpSegments.push({ startFrequency: startFreq, endFrequency: startFreq + frequencyRamp });
+                } else {
+                    // 0 bit: frequency is flat
+                    chirpSegments.push({ startFrequency: 0, endFrequency: 0});
+                }
+            }
+            return chirpSegments;
+        });
+    }
+
+    function createChirpAudioBuffer(context, chirpData, duration, paddingDuration = 0.001) {
+        const sampleRate = context.sampleRate;
+        const chirpBitDuration = duration / 8; // duration of each chirp signal bit
+        const chirpCount = chirpData.length;
+        const ChirpframeCount = sampleRate * duration;
+        const paddingFrameCount = sampleRate * paddingDuration;
+        const totalFrameCount = (ChirpframeCount + paddingFrameCount) * chirpCount + paddingFrameCount;
+
+
+        const buffer = context.createBuffer(2, totalFrameCount, sampleRate);
+        const bufferDataLeft = buffer.getChannelData(0);
+        const bufferDataRight = buffer.getChannelData(1);
+
+        chirpData.forEach((frequencies, index) => {
+            const chirpStart = Math.floor((index * (ChirpframeCount + paddingFrameCount)) + paddingFrameCount);
+            const chirpEnd = chirpStart + ChirpframeCount;
+            const paddingStart = Math.floor(index * (ChirpframeCount + paddingFrameCount));
+            const paddingEnd = paddingStart + paddingFrameCount;
+
+            // Fill padding with zeros
+            for (let i = paddingStart; i < paddingEnd; i++) {
+                bufferDataLeft[i] = 0;
+                bufferDataRight[i] = 0;
+            }
+
+            frequencies.forEach(({ startFrequency, endFrequency }, idx) => {
+                const start = idx * sampleRate * chirpBitDuration + chirpStart;
+                const k = (endFrequency - startFrequency) / chirpBitDuration;  // Chirp rate
+                if(k != 0){ 
+                    for (let i = 0; i < sampleRate * chirpBitDuration; i++) {
+                        const t = i / sampleRate;  // Time in seconds
+                        const instantaneousFrequency = startFrequency + k * t;
+                        const signalValue = Math.sin(2 * Math.PI * instantaneousFrequency * t);  // Sine wave
+                        bufferDataLeft[start + i] = signalValue;
+                        bufferDataRight[start + i] = signalValue;
+                    }
+                } else {
+                    for (let i = 0; i < sampleRate * chirpBitDuration; i++) {
+                        const t = i / sampleRate;  // Time in seconds
+                        const instantaneousFrequency = startFrequency + k * t;
+                        const signalValue = 0.99;  // Sine wave
+                        bufferDataLeft[start + i] = signalValue;
+                        bufferDataRight[start + i] = signalValue;
+                    }
+                }
+            });
+        });
+
+        const finalPaddingStart = chirpCount * (ChirpframeCount + paddingFrameCount);
+        const finalPaddingEnd = finalPaddingStart + paddingFrameCount;
+        for (let i = finalPaddingStart; i < finalPaddingEnd; i++) {
+            bufferDataLeft[i] = 0;
+            bufferDataRight[i] = 0;
+        }
+
+        return buffer;
+    }
+
+    function drawFrequencySpectrum(analyser, dataArray, sampleRate) {
+        const canvas = document.getElementById("canvas");
+        const canvasCtx = canvas.getContext("2d");
+
+        function draw() {
+            requestAnimationFrame(draw);
+            analyser.getByteFrequencyData(dataArray);
+
+            canvasCtx.clearRect(0, 0, canvas.width, canvas.height);
+
+            const barWidth = canvas.width / dataArray.length;
+            let barHeight;
+            let x = 0;
+
+            for (let i = 0; i < dataArray.length; i++) {
+                barHeight = dataArray[i];
+
+                canvasCtx.fillStyle = `rgb(${barHeight + 100}, 50, 50)`;
+                canvasCtx.fillRect(x, canvas.height - barHeight / 2, barWidth, barHeight / 2);
+
+                x += barWidth;
+            }
+        }
+
+        draw();
+    }
+
+    function playSound(chirpData) {
+        const messageElement = document.getElementById('message');
+        messageElement.textContent = "Sample Rate: " + audioContext.sampleRate;
+
+        let flatBuffer = createFlatAudioBuffer(audioContext, 0.01);
+        const chirpBuffer = createChirpAudioBuffer(audioContext, chirpData, duration);
+        let endBuffer = createEndingAudioBuffer(audioContext, 0.01);
+        let concatenatedBuffer = concatenateAudioBuffers(audioContext, flatBuffer, chirpBuffer);
+        concatenatedBuffer = concatenateAudioBuffers(audioContext, concatenatedBuffer, endBuffer);  
+
+        const source = audioContext.createBufferSource();
+        source.buffer = concatenatedBuffer;
+
+        const analyser = audioContext.createAnalyser();
+        analyser.fftSize = 2048;
+        const dataArray = new Uint8Array(analyser.frequencyBinCount);
+
+        source.connect(analyser);
+        analyser.connect(audioContext.destination);
+
+        source.start();
+        drawWaveform(analyser, dataArray);
+        drawFrequencySpectrum(analyser, dataArray, audioContext.sampleRate);
+
+        source.onended = () => {
+            source.disconnect();
+            analyser.disconnect();
+        };
+    }
+
+    const chirpData = ASCIIToChirpData(data);
+    console.log("Samples Per ASCII: " + desiredSampleRate * duration);
+    console.log(chirpData);
+    playSound(chirpData);
+}
+
 
 
 function convertDataToChirpFixed(data, desiredSampleRate = 48000) {
@@ -458,10 +607,16 @@ function convertAsciiData() {
     convertDataToFSK(binaryInput, false, parseInt(sampleRateInput));
 }
 
-function convertChirpAsciiData() {
+function convertFreqAsciiData() {
     const binaryInput = document.getElementById('asciiChirpInput').value;
     const sampleRateInput = document.getElementById('numberInput').value || 48000;
     convertDataToFreqRange(binaryInput, parseInt(sampleRateInput));
 }
 
-export { convertDataToPCM, convertDataToFSK, convertBinaryData, convertAsciiData, convertChirpAsciiData };
+function convertChirpAsciiData() {
+    const binaryInput = document.getElementById('asciiChirpInput').value;
+    const sampleRateInput = document.getElementById('numberInput').value || 48000;
+    convertDataToChirpRange(binaryInput, parseInt(sampleRateInput));
+}
+
+export { convertDataToPCM, convertDataToFSK, convertBinaryData, convertAsciiData, convertFreqAsciiData, convertChirpAsciiData };
