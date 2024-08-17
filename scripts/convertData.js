@@ -408,6 +408,7 @@ function convertDataToChirpRange(data, desiredSampleRate = 48000) {
         const chirpCount = chirpData.length;
         const ChirpframeCount = sampleRate * duration;
         const paddingFrameCount = sampleRate * paddingDuration;
+        const syncEnd = sampleRate * 0.002;
         const totalFrameCount = (ChirpframeCount + paddingFrameCount) * chirpCount + paddingFrameCount;
 
 
@@ -415,17 +416,17 @@ function convertDataToChirpRange(data, desiredSampleRate = 48000) {
         const bufferDataLeft = buffer.getChannelData(0);
         const bufferDataRight = buffer.getChannelData(1);
 
-        chirpData.forEach((frequencies, index) => {
-            const chirpStart = Math.floor((index * (ChirpframeCount + paddingFrameCount)) + paddingFrameCount);
-            const chirpEnd = chirpStart + ChirpframeCount;
-            const paddingStart = Math.floor(index * (ChirpframeCount + paddingFrameCount));
-            const paddingEnd = paddingStart + paddingFrameCount;
+        // Fill padding with zeros
+        for (let i = 0; i < syncEnd; i++) {
+            bufferDataLeft[i] = 0;
+            bufferDataRight[i] = 0;
+        }
 
-            // Fill padding with zeros
-            for (let i = paddingStart; i < paddingEnd; i++) {
-                bufferDataLeft[i] = 0;
-                bufferDataRight[i] = 0;
-            }
+        chirpData.forEach((frequencies, index) => {
+            const chirpStart = Math.floor((syncEnd + index * (ChirpframeCount + paddingFrameCount)));
+            const chirpEnd = chirpStart + ChirpframeCount;
+            const paddingStart = chirpStart + ChirpframeCount;
+            const paddingEnd = paddingStart + paddingFrameCount;
 
             frequencies.forEach(({ startFrequency, endFrequency }, idx) => {
                 const start = idx * sampleRate * chirpBitDuration + chirpStart;
@@ -448,14 +449,20 @@ function convertDataToChirpRange(data, desiredSampleRate = 48000) {
                     }
                 }
             });
+
+            // Fill padding with zeros
+            for (let i = paddingStart; i < paddingEnd; i++) {
+                bufferDataLeft[i] = 0;
+                bufferDataRight[i] = 0;
+            }
         });
 
-        const finalPaddingStart = chirpCount * (ChirpframeCount + paddingFrameCount);
-        const finalPaddingEnd = finalPaddingStart + paddingFrameCount;
-        for (let i = finalPaddingStart; i < finalPaddingEnd; i++) {
-            bufferDataLeft[i] = 0;
-            bufferDataRight[i] = 0;
-        }
+        // const finalPaddingStart = chirpCount * (ChirpframeCount + paddingFrameCount);
+        // const finalPaddingEnd = finalPaddingStart + paddingFrameCount;
+        // for (let i = finalPaddingStart; i < finalPaddingEnd; i++) {
+        //     bufferDataLeft[i] = 0;
+        //     bufferDataRight[i] = 0;
+        // }
 
         return buffer;
     }
