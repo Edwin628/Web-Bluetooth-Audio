@@ -409,7 +409,7 @@ function convertDataToChirpRange(data, desiredSampleRate = 48000) {
         const ChirpframeCount = sampleRate * duration;
         const paddingFrameCount = sampleRate * paddingDuration;
         const syncEnd = sampleRate * 0.002;
-        const totalFrameCount = (ChirpframeCount + paddingFrameCount) * chirpCount + paddingFrameCount;
+        const totalFrameCount = (ChirpframeCount + paddingFrameCount) * chirpCount + syncEnd;
 
 
         const buffer = context.createBuffer(2, totalFrameCount, sampleRate);
