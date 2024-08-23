@@ -40,10 +40,15 @@
             <input type="text" id="asciiChirpInput" placeholder="Enter ASCII data">
             <button onclick="convertChirpAsciiData()">Convert and Play</button>
             <br><br> -->
+            <audio id="audioComponent"  style="display: none;" controls>
+                <source src="./assets/sound_5.mp3" >
+                Your browser does not support the audio element.
+            </audio>
             <div>Data To Send:</div> <textarea name="textarea" id="asciiChirpInput" style="width:300px;height:100px;">Test</textarea><br>
             <div style="display: flex; gap: 10px;">
                 <button onclick="convertFreqAsciiData();">Freq Send</button>
                 <button onclick="convertChirpAsciiData();">Chirp Send</button>
+                <button id="playPauseButton">AVRCP Send</button>
             </div>
             <br><br>
             <!-- <div>Data To Send:</div> <textarea name="textarea" id="txData" style="width:300px;height:100px;">Test Data To Audio</textarea><br>
