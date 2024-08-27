@@ -16,13 +16,13 @@
             <br><br>
             <button onclick="displayNumber()">Confirm</button>
             <div id="display"></div>
-            <br><br>
+            <!-- <br><br>
             <div style="display: flex; gap: 10px;">
                 <button onclick="convertDataToPCM('a', 'flat')">CMD1</button>
                 <button onclick="convertDataToPCM('h', 'linear')">CMD2</button>
                 <button onclick="convertDataToPCM('m', 'sine')">CMD3</button>
                 <button onclick="convertDataToPCM('z')">CMD4</button>
-            </div><br><br>
+            </div><br><br> -->
             <div>
                 <div id="message" style="color: blue; margin-bottom: 10px;"></div>
                 <canvas id="oscillatorCanvas"></canvas>
@@ -46,7 +46,7 @@
             </audio>
             <div>Data To Send:</div> <textarea name="textarea" id="asciiChirpInput" style="width:300px;height:100px;">Test</textarea><br>
             <div style="display: flex; gap: 10px;">
-                <button onclick="convertFreqAsciiData();">Freq Send</button>
+                <!-- <button onclick="convertFreqAsciiData();">Freq Send</button> -->
                 <button onclick="convertChirpAsciiData();">Chirp Send</button>
                 <button id="playPauseButton">AVRCP Send</button>
             </div>
@@ -62,9 +62,8 @@
        
         <script type="text/javascript" src="scripts/ggwave_lib.js"></script>
         <script type="text/javascript" src="scripts/ggwave.js"></script>
-         <!--
         <script type="text/javascript" src="scripts/audio.js"></script>
-        -->
+       
         <script type="text/javascript" src="scripts/bluetooth.js"></script>
         <script src="scripts/index.js" type="module"></script>
         <script src="https://unpkg.com/wavesurfer.js@7"></script>

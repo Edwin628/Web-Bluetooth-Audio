@@ -8,72 +8,71 @@ window.convertBinaryData = convertBinaryData;
 window.convertAsciiData = convertAsciiData;
 window.convertFreqAsciiData = convertFreqAsciiData;
 window.convertChirpAsciiData = convertChirpAsciiData;
-window.generateAndPlaySilentAudio = generateAndPlaySilentAudio;
 
 document.getElementById('numberInput').addEventListener('change', displayNumber);
 
 
-function AVRCPSend() {
-    const textToSend = document.getElementById('asciiChirpInput').value;
+// function AVRCPSend() {
+//     const textToSend = document.getElementById('asciiChirpInput').value;
 
-    // Media Session API
-    if ('mediaSession' in navigator) {
-        navigator.mediaSession.metadata = new MediaMetadata({
-            title: textToSend,
-            artist: 'lOGITECH', 
-            album: 'WIRELESS CONTROL PROJ', 
-        });
-    }
-    console.log("Text to send:", textToSend);
-}
+//     // Media Session API
+//     if ('mediaSession' in navigator) {
+//         navigator.mediaSession.metadata = new MediaMetadata({
+//             title: textToSend,
+//             artist: 'lOGITECH', 
+//             album: 'WIRELESS CONTROL PROJ', 
+//         });
+//     }
+//     console.log("Text to send:", textToSend);
+// }
 
-function generateAndPlaySilentAudio() {
+// function generateAndPlaySilentAudio() {
 
-    const textToSend = document.getElementById('asciiChirpInput').value;
-    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+//     const textToSend = document.getElementById('asciiChirpInput').value;
+//     const audioContext = new (window.AudioContext || window.webkitAudioContext)();
 
-    const duration = 1; // seconds
+//     const duration = 1; // seconds
     
-    const sampleRate = audioContext.sampleRate;
-    const frameCount = sampleRate * duration;
-    const audioBuffer = audioContext.createBuffer(1, frameCount, sampleRate);
+//     const sampleRate = audioContext.sampleRate;
+//     const frameCount = sampleRate * duration;
+//     const audioBuffer = audioContext.createBuffer(1, frameCount, sampleRate);
     
-    const channelData = audioBuffer.getChannelData(0);
-    for (let i = 0; i < frameCount; i++) {
-        channelData[i] = 1000;
-    }
+//     const channelData = audioBuffer.getChannelData(0);
+//     for (let i = 0; i < frameCount; i++) {
+//         channelData[i] = 1000;
+//     }
     
-    const source = audioContext.createBufferSource();
-    source.buffer = audioBuffer;
-    source.connect(audioContext.destination);
+//     const source = audioContext.createBufferSource();
+//     source.buffer = audioBuffer;
+//     source.connect(audioContext.destination);
     
-    if ('mediaSession' in navigator) {
-        navigator.mediaSession.metadata = new MediaMetadata({
-            title: textToSend,
-            artist: 'Generated Silence',
-            album: 'Silent Album',
-        });
+//     if ('mediaSession' in navigator) {
+//         navigator.mediaSession.metadata = new MediaMetadata({
+//             title: textToSend,
+//             artist: 'Generated Silence',
+//             album: 'Silent Album',
+//         });
 
-        navigator.mediaSession.setActionHandler('play', () => {
-            source.start();
-        });
+//         navigator.mediaSession.setActionHandler('play', () => {
+//             source.start();
+//         });
 
-        navigator.mediaSession.setActionHandler('pause', () => {
-            source.stop();
-        });
+//         navigator.mediaSession.setActionHandler('pause', () => {
+//             source.stop();
+//         });
 
-        navigator.mediaSession.setActionHandler('previoustrack', () => {
-            console.log('Previous track action not supported.');
-        });
+//         navigator.mediaSession.setActionHandler('previoustrack', () => {
+//             console.log('Previous track action not supported.');
+//         });
 
-        navigator.mediaSession.setActionHandler('nexttrack', () => {
-            console.log('Next track action not supported.');
-        });
-    }
-    console.log(navigator.mediaSession.metadata);
+//         navigator.mediaSession.setActionHandler('nexttrack', () => {
+//             console.log('Next track action not supported.');
+//         });
+//     }
+//     console.log(navigator.mediaSession.metadata);
 
-    source.start();
-}
+//     source.start();
+// }
 
 const audioElement = document.getElementById('audioComponent');
 const playPauseButton = document.getElementById('playPauseButton');
