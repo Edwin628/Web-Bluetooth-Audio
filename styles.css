@@ -1,17 +1,64 @@
-body {
+/* body {
     font-family: Arial, sans-serif;
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100vh;
     background-color: #f0f0f0;
+*/
+
+.header {
+    display: flex;
+    justify-content: space-between; 
+    align-items: center;
 }
-.container {
+
+.header h2 {
+    margin: 0;
+    margin-left: 20px;
+    margin-bottom: 10px;
+    padding: 0;
+}
+
+.header-image {
+    height: 80px; 
+    width: auto; 
+    margin-right: 20px;
+}
+
+
+.mode-selector {
+    font-size: 1em;
+    margin-left: 20px;
+}
+
+.mode-selector label {
+    margin-right: 10px;
+    color: white; 
+}
+
+.mode-selector select {
+    padding: 5px;
+    border-radius: 4px;
+    border: 1px solid #007acc;
+    background-color: #3a3a3a; 
+    color: white; 
+}
+
+.mode-selector select option {
+    background-color: #3a3a3a; 
+    color: white; 
+}
+
+
+
+.main-container {
     background: white;
     padding: 20px;
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-}
+} 
+
 input[type="text"], textarea {
     padding: 10px;
     border-radius: 4px;
@@ -46,4 +93,82 @@ canvas {
 .inline-element {
     display: inline-block; 
     margin-right: 10px;   
+}
+
+/* slider part*/
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #272727;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* height: 100vh; */
+    margin: 0;
+}
+
+.container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-gap: 10px;
+    background-color: #282828;
+    padding: 20px;
+    border-radius: 10px;
+}
+
+.block {
+    background-color: #3a3a3a;
+    padding: 15px;
+    border-radius: 5px;
+    text-align: center;
+}
+
+.block .title {
+    background-color: #007acc;
+    padding: 5px;
+    border-radius: 3px;
+    font-weight: bold;
+}
+
+.block .value {
+    margin: 10px 0;
+    background-color: #626262;
+    padding: 10px;
+    border-radius: 5px;
+    font-size: 1.2em;
+}
+
+.block select, .block input[type="range"] {
+    width: 100%;
+    margin-top: 10px;
+}
+
+.block select{
+    color: white;
+}
+
+.slider {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 15px;
+    background: #007acc;
+    outline: none;
+    opacity: 0.7;
+    transition: opacity 0.2s;
+    border-radius: 10px;
+}
+
+.slider:hover {
+    opacity: 1;
+}
+
+.slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 25px;
+    height: 25px;
+    background: #004b8d;
+    cursor: pointer;
+    border-radius: 50%;
 }

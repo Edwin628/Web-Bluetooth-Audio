@@ -3,19 +3,65 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Convert Data to Audio</title>
+        <title>Logitech Web Pad</title>
         <link rel="stylesheet" href="styles.css">
     </head>
     <body>
-        <div class="container">
-            <h2>Convert Data to Audio</h2>
-            <button id="connect-bluetooth">Connect to Bluetooth Device</button>
-            <br><br>
-            <div class="inline-element">Input Sampling Number:</div>
-            <input type="number" id="numberInput" class="inline-element" placeholder="48000Hz">
-            <br><br>
-            <button onclick="displayNumber()">Confirm</button>
+        <div>
+            <br>
+            <div class="header">
+                <div class="text-section">
+                    <h2>Logitech Gaming Wheel</h2>
+                    <div class="mode-selector">
+                        <label for="sendModeSelect">Send Mode:</label>
+                        <select id="sendModeSelect">
+                            <option value="chirp">CHIRP</option>
+                            <option value="avrc">AVRC</option>
+                        </select>
+                    </div>
+                </div>
+                <img src="assets/logiwheel.png" alt="Logo" class="header-image">
+            </div>
+            <button id="connect-bluetooth" style="display: none;">Connect to Bluetooth Device</button>
+            <div class="inline-element" style="display: none;">Input Sampling Number:</div>
+            <input type="number" id="numberInput" class="inline-element" placeholder="48000Hz" style="display: none;">
+            <button onclick="displayNumber()" style="display: none;">Confirm</button>
             <div id="display"></div>
+
+            <div class="container">
+                <div class="block" id="modeBlock">
+                    <div class="title">MODE</div>
+                    <!-- <div class="value" id="modeValue">PRO</div> -->
+                    <select id="modeSelect" class="value">
+                        <option value="PRO">PRO</option>
+                        <option value="G923">G923</option>
+                    </select>
+                </div>
+                <div class="block" id="strengthBlock">
+                    <div class="title">STRENGTH</div>
+                    <div class="value" id="strengthValue">4.9 Nm</div>
+                </div>
+                <div class="block" id="ffbFilterBlock">
+                    <div class="title">FFB FILTER</div>
+                    <div class="value" id="ffbFilterValue">11 / 15</div>
+                </div>
+                <div class="block" id="dampenerBlock">
+                    <div class="title">DAMPENER</div>
+                    <div class="value" id="dampenerValue">40%</div>
+                </div>
+                <div class="block" id="tfAudioBlock">
+                    <div class="title">TF AUDIO</div>
+                    <div class="value" id="tfAudioValue">40%</div>
+                </div>
+                <div class="block" id="angleBlock">
+                    <div class="title">ANGLE</div>
+                    <div class="value" id="angleValue">300°</div>
+                </div>
+            </div>
+        
+            <div class="slider-container">
+                <input type="range" min="0" max="100" step="1" value="50" id="universalSlider" class="slider">
+            </div>
             <!-- <br><br>
             <div style="display: flex; gap: 10px;">
                 <button onclick="convertDataToPCM('a', 'flat')">CMD1</button>
@@ -23,11 +69,8 @@
                 <button onclick="convertDataToPCM('m', 'sine')">CMD3</button>
                 <button onclick="convertDataToPCM('z')">CMD4</button>
             </div><br><br> -->
-            <div>
-                <div id="message" style="color: blue; margin-bottom: 10px;"></div>
-                <canvas id="oscillatorCanvas"></canvas>
-            </div>
-            <br><br>
+            
+            <br>
             <!-- <div>Binary Data:</div> 
             <input type="text" id="binaryInput" placeholder="Enter binary data">
             <button onclick="convertBinaryData()">Convert and Play</button>
@@ -40,15 +83,12 @@
             <input type="text" id="asciiChirpInput" placeholder="Enter ASCII data">
             <button onclick="convertChirpAsciiData()">Convert and Play</button>
             <br><br> -->
-            <audio id="audioComponent"  style="display: none;" controls>
-                <source src="./assets/sound_5.mp3" >
-                Your browser does not support the audio element.
-            </audio>
-            <div>Data To Send:</div> <textarea name="textarea" id="asciiChirpInput" style="width:300px;height:100px;">Test</textarea><br>
+            
+            <div>Data To Send:</div> <textarea name="textarea" id="asciiChirpInput" style="width:90%;height:100px;">Test</textarea><br>
             <div style="display: flex; gap: 10px;">
                 <!-- <button onclick="convertFreqAsciiData();">Freq Send</button> -->
                 <button onclick="convertChirpAsciiData();">Chirp Send</button>
-                <button id="playPauseButton">AVRCP Send</button>
+                <button id="playPauseButton">AVRC Send</button>
             </div>
             <br><br>
             <!-- <div>Data To Send:</div> <textarea name="textarea" id="txData" style="width:300px;height:100px;">Test Data To Audio</textarea><br>
@@ -56,16 +96,49 @@
                 <button onclick="onSend();">Send</button>
                 <button onclick="deleteWaveform()">Delete Waveform</button>
             </div> -->
+
+            <!-- Slider for selecting a value -->
+            <div>
+                <div class="inline-element">Select a value:</div>
+                <input type="range" id="valueSlider" min="0" max="11" step="0.1" value="0" class="inline-element" oninput="updateSliderValue()">
+                <span id="sliderValue">0.0</span>
+            </div>
+            <br>
+            <div style="display: flex; gap: 10px;">
+                <!-- <button onclick="convertFreqAsciiData();">Freq Send</button> -->
+                <button onclick="convertChirpSliderData();">Chirp Send</button>
+                <button id="playPauseButton_slider">AVRC Send</button>
+            </div>
+            <br>
+            <div>
+                <div id="message" style="color: rgb(255, 255, 255); margin-bottom: 10px;"></div>
+                <canvas id="oscillatorCanvas"></canvas>
+            </div>
             <div id="waveform"></div> <!-- Container for the waveform -->
             <canvas id="canvas" width="800" height="400"></canvas>
+            <br><br>
+            <audio id="audioComponent"  style="display: none;" controls>
+                <source src="./assets/sound_5.mp3" >
+                Your browser does not support the audio element.
+            </audio>
+            <audio id="audioComponent_slider"  style="display: none;" controls>
+                <source src="./assets/sound_5.mp3" >
+                Your browser does not support the audio element.
+            </audio>
+            <audio id="audioComponent_wheel"  style="display: none;" controls>
+                <source src="./assets/sound_5.mp3" >
+                Your browser does not support the audio element.
+            </audio>
         </div>
        
         <script type="text/javascript" src="scripts/ggwave_lib.js"></script>
         <script type="text/javascript" src="scripts/ggwave.js"></script>
         <script type="text/javascript" src="scripts/audio.js"></script>
-       
         <script type="text/javascript" src="scripts/bluetooth.js"></script>
+        <script type="text/javascript" src="scripts/bluetooth.js"></script>
+        <script src="scripts/slider.js" type="module"></script>
         <script src="scripts/index.js" type="module"></script>
+        <script src="scripts/avrc.js" type="module"></script>
         <script src="https://unpkg.com/wavesurfer.js@7"></script>
     </body>
 </html>

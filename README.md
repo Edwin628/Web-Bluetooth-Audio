@@ -82,6 +82,8 @@ Test for AVRC Send, change it based on your need on `index.html`:
   - `audioContext.js`: Manages the AudioContext.
   - `bluetooth.js`: Handles Bluetooth connectivity.
   - `convertData.js`: Converts data to audio.
+  - `avrc.js`: Send data using arvc metadata.
+  - `ggwave_lib.js`: Library for ggwave.
   - `draw.js`: Handles visual representation of audio.
   - `ggwave_lib.js`: Library for ggwave.
   - `ggwave.js`: Wrapper around the ggwave library.

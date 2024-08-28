@@ -621,9 +621,21 @@ function convertFreqAsciiData() {
 }
 
 function convertChirpAsciiData() {
-    const binaryInput = document.getElementById('asciiChirpInput').value;
+    const textInput =  "_" + document.getElementById('asciiChirpInput').value;
     const sampleRateInput = document.getElementById('numberInput').value || 48000;
-    convertDataToChirpRange(binaryInput, parseInt(sampleRateInput));
+    convertDataToChirpRange(textInput, parseInt(sampleRateInput));
+}
+function convertChirpSliderData() {
+    const sliderInput = "_str=" + document.getElementById('valueSlider').value;
+    const sampleRateInput = document.getElementById('numberInput').value || 48000;
+    convertDataToChirpRange(sliderInput, parseInt(sampleRateInput));
 }
 
-export { convertDataToPCM, convertDataToFSK, convertBinaryData, convertAsciiData, convertFreqAsciiData, convertChirpAsciiData };
+// logitech gaming wheel function
+function convertChirpWheelData(value) {
+    const sliderInput = value;
+    const sampleRateInput = document.getElementById('numberInput').value || 48000;
+    convertDataToChirpRange(sliderInput, parseInt(sampleRateInput));
+}
+
+export { convertDataToPCM, convertDataToFSK, convertBinaryData, convertAsciiData, convertFreqAsciiData, convertChirpAsciiData, convertChirpSliderData, convertChirpWheelData};
