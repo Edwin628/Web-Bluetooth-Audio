@@ -84,6 +84,12 @@ slider.addEventListener('change', function() {
     }
 });
 
+slider.addEventListener('touchend', function() {
+    if (selectedBlock) {
+        handleValueChange(selectedBlock.id, slider.value);
+    }
+});
+
 function handleValueChange(blockId, value) {
     const blockElement = document.getElementById(blockId);
     const valueElement = blockElement.querySelector('.value');
