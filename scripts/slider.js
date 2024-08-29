@@ -1,4 +1,4 @@
-import {convertChirpWheelData} from './convertData.js';
+import {convertChirpWheelData, convertChirpWheelIOSData} from './convertData.js';
 
 
 let selectedBlock = null;
@@ -104,8 +104,6 @@ const logOutput = document.getElementById('logOutput');
 
 // pointerup, touchend
 
-
-
 let wasTouched = false;
 slider.addEventListener('touchend', function() {
     wasTouched = true;
@@ -114,7 +112,7 @@ slider.addEventListener('touchend', function() {
         logOutput.textContent = message;
         handleValueChange(selectedBlock.id, slider.value);
     }
-    setTimeout(() => wasTouched = false, 100);
+    setTimeout(() => wasTouched = false, 10);
 });
 
 slider.addEventListener('mouseup', function() {
@@ -163,7 +161,8 @@ document.getElementById('sendModeSelect').addEventListener('change', function() 
 
 function SendData(textToSend) {
     if (sendMode == "chirp") {
-        convertChirpWheelData(textToSend);
+        // convertChirpWheelData(textToSend);
+        convertChirpWheelIOSData();
     } else {
         playAudioWithMetadata(textToSend);
     }
@@ -186,3 +185,5 @@ function playAudioWithMetadata(textToSend) {
 document.getElementById('modeSelect').addEventListener('change', function() {
     handleValueChange('modeBlock', this.value);
 });
+
+export {selectedBlock}

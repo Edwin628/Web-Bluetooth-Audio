@@ -1,6 +1,7 @@
 import { createSineWaveAudioBuffer, createLinearAudioBuffer, createFlatAudioBuffer, createEndingAudioBuffer} from './audioBuffers.js';
 import { drawWaveform } from './draw.js';
 import { desiredSampleRate } from './audioContext.js';
+import { selectedBlock } from './slider.js';
 
 function stopSound(audioContext) {
     if (audioContext) {
@@ -638,4 +639,32 @@ function convertChirpWheelData(value) {
     convertDataToChirpRange(sliderInput, parseInt(sampleRateInput));
 }
 
-export { convertDataToPCM, convertDataToFSK, convertBinaryData, convertAsciiData, convertFreqAsciiData, convertChirpAsciiData, convertChirpSliderData, convertChirpWheelData};
+const slider = document.getElementById('universalSlider');
+function convertChirpWheelIOSData() {
+    let sliderInput;
+    switch (selectedBlock.id) {
+        case 'modeBlock':
+            // convertChirpWheelData("_mod=" + value);
+            sliderInput ="_mod=" + document.getElementById('sendModeSelect').value;
+            break;
+        case 'strengthBlock':
+            sliderInput = "_str=" + slider.value;
+            break;
+        case 'ffbFilterBlock':
+            sliderInput = "_ffb=" + slider.value;
+            break;
+        case 'dampenerBlock':
+            sliderInput = "_dam=" + slider.value;
+            break;
+        case 'tfAudioBlock':
+            sliderInput = "_tfa=" + slider.value;
+            break;
+        case 'angleBlock':
+            sliderInput = "_ang=" + slider.value;
+            break;
+    }
+    const sampleRateInput = document.getElementById('numberInput').value || 48000;
+    convertDataToChirpRange(sliderInput, parseInt(sampleRateInput));
+}
+
+export { convertDataToPCM, convertDataToFSK, convertBinaryData, convertAsciiData, convertFreqAsciiData, convertChirpAsciiData, convertChirpSliderData, convertChirpWheelData, convertChirpWheelIOSData};
