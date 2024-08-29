@@ -78,13 +78,13 @@ slider.addEventListener('input', function() {
     }
 });
 
-slider.addEventListener('change', function() {
-    if (selectedBlock) {
-        handleValueChange(selectedBlock.id, slider.value);
-    }
-});
+// slider.addEventListener('change', function() {
+//     if (selectedBlock) {
+//         handleValueChange(selectedBlock.id, slider.value);
+//     }
+// });
 
-slider.addEventListener('touchend', function() {
+slider.addEventListener('pointerup', function() {
     if (selectedBlock) {
         handleValueChange(selectedBlock.id, slider.value);
     }

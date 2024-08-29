@@ -80,11 +80,11 @@ Test for AVRC Send, change it based on your need on `index.html`:
   - `audio.js`: Old audio script.
   - `audioBuffers.js`: Manages audio buffers (sine, linear, flat).
   - `audioContext.js`: Manages the AudioContext.
+  - `avrc.js`: Send data using arvc metadata.
   - `bluetooth.js`: Handles Bluetooth connectivity.
   - `convertData.js`: Converts data to audio.
-  - `avrc.js`: Send data using arvc metadata.
-  - `ggwave_lib.js`: Library for ggwave.
   - `draw.js`: Handles visual representation of audio.
+  - `slider.js`: logitech gaming wheel chontrol.
   - `ggwave_lib.js`: Library for ggwave.
   - `ggwave.js`: Wrapper around the ggwave library.
   - `index.js`: Main entry point of the application.
