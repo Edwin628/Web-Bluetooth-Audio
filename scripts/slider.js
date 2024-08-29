@@ -104,21 +104,21 @@ const logOutput = document.getElementById('logOutput');
 
 // pointerup, touchend
 
-let wasTouched = false;
-slider.addEventListener('touchend', function() {
-    wasTouched = true;
-    if (selectedBlock) {
-        const message = 'Touchend event triggered: ' + slider.value;
-        logOutput.textContent = message;
-        handleValueChange(selectedBlock.id, slider.value);
-    }
-    setTimeout(() => wasTouched = false, 10);
-});
+// let wasTouched = false;
+// slider.addEventListener('touchend', function() {
+//     wasTouched = true;
+//     if (selectedBlock) {
+//         const message = 'Touchend event triggered: ' + slider.value;
+//         logOutput.textContent = message;
+//         handleValueChange(selectedBlock.id, slider.value);
+//     }
+//     setTimeout(() => wasTouched = false, 10);
+// });
 
 slider.addEventListener('mouseup', function() {
     // const message = 'Mouseup event triggered: ' + slider.value;
     // logOutput.textContent = message;
-    if (!wasTouched && selectedBlock) {
+    if (selectedBlock) {
         handleValueChange(selectedBlock.id, slider.value);
     }
 });
