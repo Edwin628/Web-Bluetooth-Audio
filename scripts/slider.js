@@ -57,37 +57,66 @@ blocks.forEach(block => {
 });
 
 slider.addEventListener('input', function() {
-    if (selectedBlock) {
-        switch (selectedBlock.id) {
-            case 'strengthBlock':
-                document.getElementById('strengthValue').textContent = slider.value + ' Nm';
-                break;
-            case 'ffbFilterBlock':
-                document.getElementById('ffbFilterValue').textContent = slider.value + ' / 15';
-                break;
-            case 'dampenerBlock':
-                document.getElementById('dampenerValue').textContent = slider.value + '%';
-                break;
-            case 'tfAudioBlock':
-                document.getElementById('tfAudioValue').textContent = slider.value + '%';
-                break;
-            case 'angleBlock':
-                document.getElementById('angleValue').textContent = slider.value + '°';
-                break;
-        }
+    // if (selectedBlock) {
+    //     switch (selectedBlock.id) {
+    //         case 'strengthBlock':
+    //             document.getElementById('strengthValue').textContent = slider.value + ' Nm';
+    //             break;
+    //         case 'ffbFilterBlock':
+    //             document.getElementById('ffbFilterValue').textContent = slider.value + ' / 15';
+    //             break;
+    //         case 'dampenerBlock':
+    //             document.getElementById('dampenerValue').textContent = slider.value + '%';
+    //             break;
+    //         case 'tfAudioBlock':
+    //             document.getElementById('tfAudioValue').textContent = slider.value + '%';
+    //             break;
+    //         case 'angleBlock':
+    //             document.getElementById('angleValue').textContent = slider.value + '°';
+    //             break;
+    //     }
+    // }
+    if (isTouching && selectedBlock) {
+        updateUI(selectedBlock.id, slider.value);
     }
 });
+
+function updateUI(id, value) {
+    switch (id) {
+        case 'strengthBlock':
+            document.getElementById('strengthValue').textContent = value + ' Nm';
+            break;
+        case 'ffbFilterBlock':
+            document.getElementById('ffbFilterValue').textContent = value + ' / 15';
+            break;
+        case 'dampenerBlock':
+            document.getElementById('dampenerValue').textContent = value + '%';
+            break;
+        case 'tfAudioBlock':
+            document.getElementById('tfAudioValue').textContent = value + '%';
+            break;
+        case 'angleBlock':
+            document.getElementById('angleValue').textContent = value + '°';
+            break;
+    }
+}
 
 // slider.addEventListener('change', function() {
 //     if (selectedBlock) {
 //         handleValueChange(selectedBlock.id, slider.value);
 //     }
 // });
+let isTouching = false;
+
+slider.addEventListener('pointerdown', function() {
+    isTouching = true;
+});
 
 slider.addEventListener('pointerup', function() {
     if (selectedBlock) {
         handleValueChange(selectedBlock.id, slider.value);
     }
+    isTouching = false;
 });
 
 function handleValueChange(blockId, value) {
