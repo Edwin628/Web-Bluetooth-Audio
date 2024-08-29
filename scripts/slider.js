@@ -76,7 +76,7 @@ slider.addEventListener('input', function() {
     //             break;
     //     }
     // }
-    if (isTouching && selectedBlock) {
+    if (selectedBlock) {
         updateUI(selectedBlock.id, slider.value);
     }
 });
@@ -106,6 +106,7 @@ function updateUI(id, value) {
 //         handleValueChange(selectedBlock.id, slider.value);
 //     }
 // });
+
 let isTouching = false;
 
 slider.addEventListener('pointerdown', function() {
