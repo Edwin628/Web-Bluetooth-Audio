@@ -127,7 +127,8 @@ slider.addEventListener('mouseup', function() {
 
 function handleValueChange(blockId, value) {
     const blockElement = document.getElementById(blockId);
-    const valueElement = blockElement.querySelector('.value');
+    const message = 'handle value triggered: ' + value;
+    logOutput.textContent = message;
 
     switch (selectedBlock.id) {
         case 'modeBlock':
@@ -159,6 +160,7 @@ let sendMode = "chirp";
 document.getElementById('sendModeSelect').addEventListener('change', function() {
     sendMode = this.value;
 });
+
 function SendData(textToSend) {
     if (sendMode == "chirp") {
         convertChirpWheelData(textToSend);
