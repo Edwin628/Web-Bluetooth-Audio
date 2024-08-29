@@ -102,34 +102,28 @@ function updateUI(id, value) {
 }
 const logOutput = document.getElementById('logOutput');
 
+// pointerup, touchend
+
+
+
+let wasTouched = false;
+slider.addEventListener('touchend', function() {
+    wasTouched = true;
+    if (selectedBlock) {
+        const message = 'Touchend event triggered: ' + slider.value;
+        logOutput.textContent = message;
+        handleValueChange(selectedBlock.id, slider.value);
+    }
+    setTimeout(() => wasTouched = false, 100);
+});
+
 slider.addEventListener('mouseup', function() {
     // const message = 'Mouseup event triggered: ' + slider.value;
     // logOutput.textContent = message;
-    if (selectedBlock) {
+    if (!wasTouched && selectedBlock) {
         handleValueChange(selectedBlock.id, slider.value);
     }
 });
-
-// slider.addEventListener('touchend', function() {
-//     if (selectedBlock) {
-//         const message = 'Touchend event triggered: ' + slider.value;
-//         logOutput.textContent = message;
-//         handleValueChange(selectedBlock.id, slider.value);
-//     }
-// });
-
-// let isTouching = false;
-
-// slider.addEventListener('pointerdown', function() {
-//     isTouching = true;
-// });
-
-// slider.addEventListener('pointerup', function() {
-//     if (selectedBlock) {
-//         handleValueChange(selectedBlock.id, slider.value);
-//     }
-//     isTouching = false;
-// });
 
 function handleValueChange(blockId, value) {
     const blockElement = document.getElementById(blockId);
