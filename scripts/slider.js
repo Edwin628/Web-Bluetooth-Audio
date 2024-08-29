@@ -110,13 +110,13 @@ slider.addEventListener('mouseup', function() {
 });
 
 const logOutput = document.getElementById('logOutput');
-// slider.addEventListener('touchend', function() {
-//     if (selectedBlock) {
-//         const message = 'Touchend event triggered: ' + slider.value;
-//         logOutput.textContent = message;
-//         handleValueChange(selectedBlock.id, slider.value);
-//     }
-// });
+slider.addEventListener('touchend', function() {
+    if (selectedBlock) {
+        const message = 'Touchend event triggered: ' + slider.value;
+        logOutput.textContent = message;
+        handleValueChange(selectedBlock.id, slider.value);
+    }
+});
 
 // let isTouching = false;
 
