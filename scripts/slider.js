@@ -102,18 +102,21 @@ function updateUI(id, value) {
 }
 
 slider.addEventListener('mouseup', function() {
+    const message = 'Mouseup event triggered: ' + slider.value;
+    logOutput.textContent = message;
     if (selectedBlock) {
         handleValueChange(selectedBlock.id, slider.value);
     }
 });
 
 const logOutput = document.getElementById('logOutput');
-slider.addEventListener('touchend', function() {
-    const message = 'Touchend event triggered: ' + slider.value;
-    
-    // 将消息显示在 logOutput 元素中
-    logOutput.textContent = message;
-});
+// slider.addEventListener('touchend', function() {
+//     if (selectedBlock) {
+//         const message = 'Touchend event triggered: ' + slider.value;
+//         logOutput.textContent = message;
+//         handleValueChange(selectedBlock.id, slider.value);
+//     }
+// });
 
 // let isTouching = false;
 
