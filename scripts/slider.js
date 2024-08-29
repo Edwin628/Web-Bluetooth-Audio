@@ -107,6 +107,7 @@ slider.addEventListener('mouseup', function() {
     }
 });
 
+const logOutput = document.getElementById('logOutput');
 slider.addEventListener('touchend', function() {
     const message = 'Touchend event triggered: ' + slider.value;
     
