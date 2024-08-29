@@ -107,6 +107,12 @@ slider.addEventListener('mouseup', function() {
     }
 });
 
+slider.addEventListener('touchend', function() {
+    const message = 'Touchend event triggered: ' + slider.value;
+    
+    // 将消息显示在 logOutput 元素中
+    logOutput.textContent = message;
+});
 
 // let isTouching = false;
 
