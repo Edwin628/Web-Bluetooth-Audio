@@ -101,24 +101,25 @@ function updateUI(id, value) {
     }
 }
 
-// slider.addEventListener('change', function() {
-//     if (selectedBlock) {
-//         handleValueChange(selectedBlock.id, slider.value);
-//     }
-// });
-
-let isTouching = false;
-
-slider.addEventListener('pointerdown', function() {
-    isTouching = true;
-});
-
-slider.addEventListener('pointerup', function() {
+slider.addEventListener('mouseup', function() {
     if (selectedBlock) {
         handleValueChange(selectedBlock.id, slider.value);
     }
-    isTouching = false;
 });
+
+
+// let isTouching = false;
+
+// slider.addEventListener('pointerdown', function() {
+//     isTouching = true;
+// });
+
+// slider.addEventListener('pointerup', function() {
+//     if (selectedBlock) {
+//         handleValueChange(selectedBlock.id, slider.value);
+//     }
+//     isTouching = false;
+// });
 
 function handleValueChange(blockId, value) {
     const blockElement = document.getElementById(blockId);
