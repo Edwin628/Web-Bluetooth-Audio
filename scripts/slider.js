@@ -161,8 +161,8 @@ document.getElementById('sendModeSelect').addEventListener('change', function() 
 
 function SendData(textToSend) {
     if (sendMode == "chirp") {
-        // convertChirpWheelData(textToSend);
-        convertChirpWheelIOSData();
+        convertChirpWheelData(textToSend);
+        // convertChirpWheelIOSData();
     } else {
         playAudioWithMetadata(textToSend);
     }
