@@ -119,12 +119,12 @@ slider.addEventListener('mouseup', function() {
     // const message = 'Mouseup event triggered: ' + slider.value;
     // logOutput.textContent = message;
     if (selectedBlock) {
-        handleValueChange(selectedBlock.id, slider.value);
+        handleValueChange(slider.value);
     }
 });
 
-function handleValueChange(blockId, value) {
-    const blockElement = document.getElementById(blockId);
+function handleValueChange(value) {
+    // const blockElement = document.getElementById(blockId);
     const message = 'handle value triggered: ' + value;
     logOutput.textContent = message;
 
@@ -152,6 +152,10 @@ function handleValueChange(blockId, value) {
 
     console.log(`${blockId}: ${value}`);
 }
+
+document.getElementById('updateButton').addEventListener('click', function() {
+    handleValueChange(slider.value);
+});
 
 let sendMode = "chirp";
 
@@ -183,7 +187,7 @@ function playAudioWithMetadata(textToSend) {
 }
 
 document.getElementById('modeSelect').addEventListener('change', function() {
-    handleValueChange('modeBlock', this.value);
+    handleValueChange(this.value);
 });
 
 export {selectedBlock}

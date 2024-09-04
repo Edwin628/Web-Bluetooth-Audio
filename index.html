@@ -61,9 +61,10 @@
         
             <div class="slider-container">
                 <input type="range" min="0" max="100" step="1" value="50" id="universalSlider" class="slider">
+                <button id="updateButton">Update</button>
             </div>
 
-            <div id="logOutput"></div>
+            <div id="logOutput" style ="margin-left: 10px; margin-right: 10px;"></div>
             <!-- <br><br>
             <div style="display: flex; gap: 10px;">
                 <button onclick="convertDataToPCM('a', 'flat')">CMD1</button>
@@ -85,9 +86,13 @@
             <input type="text" id="asciiChirpInput" placeholder="Enter ASCII data">
             <button onclick="convertChirpAsciiData()">Convert and Play</button>
             <br><br> -->
-            
-            <div>Data To Send:</div> <textarea name="textarea" id="asciiChirpInput" style="width:90%;height:100px;">Test</textarea><br>
-            <div style="display: flex; gap: 10px;">
+            <div style="text-align: center;">
+                <div>Data To Send</div>
+                <textarea name="textarea" id="asciiChirpInput" style="width:90%;height:100px;margin: 0 auto;display: block;">Test</textarea>
+            </div>
+            <!-- <div>Data To Send:</div> <textarea name="textarea" id="asciiChirpInput" style="width:80%;height:100px;">Test</textarea> -->
+            <br>
+            <div style="display: flex; gap: 10px; margin-left: 10px; margin-right: 10px;">
                 <!-- <button onclick="convertFreqAsciiData();">Freq Send</button> -->
                 <button onclick="convertChirpAsciiData();">Chirp Send</button>
                 <button id="playPauseButton">AVRC Send</button>
@@ -100,13 +105,13 @@
             </div> -->
 
             <!-- Slider for selecting a value -->
-            <div>
+            <div style ="margin-left: 10px; margin-right: 10px;">
                 <div class="inline-element">Select a value:</div>
                 <input type="range" id="valueSlider" min="0" max="11" step="0.1" value="0" class="inline-element" oninput="updateSliderValue()">
                 <span id="sliderValue">0.0</span>
             </div>
             <br>
-            <div style="display: flex; gap: 10px;">
+            <div style="display: flex; gap: 10px; margin-left: 10px; margin-right: 10px;">
                 <!-- <button onclick="convertFreqAsciiData();">Freq Send</button> -->
                 <button onclick="convertChirpSliderData();">Chirp Send</button>
                 <button id="playPauseButton_slider">AVRC Send</button>
@@ -116,7 +121,7 @@
                 <div id="message" style="color: rgb(255, 255, 255); margin-bottom: 10px;"></div>
                 <canvas id="oscillatorCanvas"></canvas>
             </div>
-            <div id="waveform"></div> <!-- Container for the waveform -->
+            <div id="waveform" style="margin-left: 10px; margin-right: 10px;"></div> <!-- Container for the waveform -->
             <canvas id="canvas" width="800" height="400"></canvas>
             <br><br>
             <audio id="audioComponent"  style="display: none;" controls>

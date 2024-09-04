@@ -67,7 +67,7 @@ input[type="text"], textarea {
     margin-bottom: 10px;
 }
 button {
-    background-color: #007bff;
+    background-color:  #007acc;
     color: white;
     border: none;
     padding: 10px 15px;
@@ -80,7 +80,7 @@ button:hover {
     background-color: #0056b3;
 }
 #txData, #rxData {
-    width: 300px; /* Specific styling for textareas */
+    width: 100px; /* Specific styling for textareas */
     height: 100px;
 }
 
@@ -115,6 +115,14 @@ body {
     background-color: #282828;
     padding: 20px;
     border-radius: 10px;
+}
+
+.slider-container {
+    display: grid;
+    grid-template-columns: 1fr auto; /* 第一列占满剩余空间，第二列自适应宽度 */
+    grid-gap: 10px; /* 为列间添加间距 */
+    margin-left: 10px;
+    margin-right: 10px;
 }
 
 .block {
